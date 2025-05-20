@@ -1,45 +1,34 @@
 #!/bin/bash
-
-# Vérifie que trois arguments sont passés
+# Fonction calculatrice
+calculate() {
+  local a="$1"
+  local b="$2"
+  local op="$3"
+  # Vérification de type
+  if ! [[ "$a" =~ ^-?[0-9]+$ && "$b" =~ ^-?[0-9]+$ ]]; then
+    echo "Erreur : les deux premiers arguments doivent être des entiers."
+    return 1
+  fi
+  case "$op" in
+    +) echo "Résultat : $((a + b))" ;;
+    -) echo "Résultat : $((a - b))" ;;
+    \*) echo "Résultat : $((a * b))" ;;
+    /)
+      if [ "$b" -eq 0 ]; then
+        echo "Erreur : division par zéro."
+        return 1
+      fi
+      echo "Résultat : $((a / b))"
+      ;;
+    *)
+      echo "Erreur : opérateur invalide. Utiliser + - * /"
+      return 1
+      ;;
+  esac
+}
+# Vérifie le nombre d'arguments
 if [ $# -ne 3 ]; then
-  echo "Usage: $0 nombre1 nombre2 opérateur"
-  echo "Exemple : $0 5 3 +"
+  echo "Usage : $0 <nombre1> <nombre2> <opérateur>"
   exit 1
 fi
-
-n1=$1
-n2=$2
-op=$3
-
-# Vérifie que les deux premiers arguments sont des nombres
-if ! [[ "$n1" =~ ^-?[0-9]+$ ]] || ! [[ "$n2" =~ ^-?[0-9]+$ ]]; then
-  echo "Erreur : les deux premiers arguments doivent être des entiers."
-  exit 1
-fi
-
-# Calcul selon l’opérateur
-case "$op" in
-  +)
-    res=$((n1 + n2))
-    ;;
-  -)
-    res=$((n1 - n2))
-    ;;
-  \*)
-    res=$((n1 * n2))
-    ;;
-  /)
-    if [ "$n2" -eq 0 ]; then
-      echo "Erreur : division par zéro."
-      exit 1
-    fi
-    res=$((n1 / n2))
-    ;;
-  *)
-    echo "Erreur : opérateur non valide. Utilisez +, -, *, ou /."
-    exit 1
-    ;;
-esac
-
-# Affiche le résultat
-echo "Résultat : $res"
+calculate "$1" "$2" "$3"
