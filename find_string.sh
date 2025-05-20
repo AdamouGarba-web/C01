@@ -1,23 +1,21 @@
 #!/bin/bash
-
-# Vérifie qu'on a bien deux arguments : le fichier et la chaîne
+# Fonction de recherche de chaîne dans un fichier
+find_string() {
+  local file="$1"
+  local pattern="$2"
+  if [ ! -f "$file" ]; then
+    echo "Erreur : le fichier '$file' n'existe pas."
+    return 1
+  fi
+  if grep -q "$pattern" "$file"; then
+    echo "La chaîne '$pattern' a été trouvée dans $file."
+  else
+    echo "La chaîne '$pattern' n'a pas été trouvée dans $file."
+  fi
+}
+# Vérifie les arguments
 if [ $# -ne 2 ]; then
-  echo "Usage: $0 nom_du_fichier chaîne_à_rechercher"
+  echo "Usage : $0 <fichier> <chaine_a_rechercher>"
   exit 1
 fi
-
-fichier="$1"
-chaine="$2"
-
-# Vérifie si le fichier existe
-if [ ! -f "$fichier" ]; then
-  echo "Erreur : le fichier '$fichier' n'existe pas."
-  exit 1
-fi
-
-# Recherche la chaîne avec grep
-if grep -q "$chaine" "$fichier"; then
-  echo "La chaîne '$chaine' a été trouvée dans $fichier."
-else
-  echo "La chaîne '$chaine' n'a pas été trouvée dans $fichier."
-fi
+find_string "$1" "$2"
